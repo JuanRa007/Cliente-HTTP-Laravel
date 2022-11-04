@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
+use App\Services\MarketAuthenticationService;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+
 
 class LoginController extends Controller
 {
@@ -28,13 +31,39 @@ class LoginController extends Controller
      */
     protected $redirectTo = RouteServiceProvider::HOME;
 
+    protected $marketAuthenticationService;
+
     /**
      * Create a new controller instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct(MarketAuthenticationService $marketAuthenticationService)
     {
         $this->middleware('guest')->except('logout');
+
+        $this->marketAuthenticationService = $marketAuthenticationService;
+    }
+
+    /**
+     * Show the application's login form.
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showLoginForm()
+    {
+        $authorizationUrl = $this->marketAuthenticationService->resolveAuthorizationUrl();
+
+        return view('auth.login')->with(['authorizationUrl' => $authorizationUrl]);
+    }
+
+    public function authorization(Request $request)
+    {
+        if ($request->has('code')) {
+            $tokenData = $this->marketAuthenticationService->getCodeToken($request->code);
+            return;
+        }
+
+        return redirect()->route('login')->withErrors(['You canceled the authorization process.']);
     }
 }

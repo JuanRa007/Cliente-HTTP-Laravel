@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\WelcomeController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\CategoryProductController;
 
 /*
@@ -19,7 +20,7 @@ use App\Http\Controllers\CategoryProductController;
 
 Route::get('/', [WelcomeController::class, 'showWelcomePage'])->name('welcome');
 
-// Route::get('authorization', 'Auth\LoginController@authorization')->name('authorization');
+Route::get('authorization', [LoginController::class, 'authorization'])->name('authorization');
 
 Route::get('categories/{title}-{id}/products', [CategoryProductController::class, 'showProducts'])->name('categories.products.show');
 
