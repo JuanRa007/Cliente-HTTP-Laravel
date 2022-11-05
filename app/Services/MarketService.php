@@ -43,4 +43,10 @@ class MarketService
   {
     return $this->makeRequest('GET', "categories/{$id}/products");
   }
+
+  // Obtenemos los productos de una categoría.
+  public function getUserInformation()
+  {
+    return $this->makeRequest('GET', "users/me");
+  }
 }

@@ -56,7 +56,7 @@ class MarketAuthenticationService
     $query = http_build_query([
       'client_id' => $this->clientId,
       'redirect_uri' => route('authorization'),
-      'reponse_type' => 'code',
+      'response_type' => 'code',
       'scope' => 'purchase-product manage-products manage-account read-general'
     ]);
 
@@ -78,7 +78,7 @@ class MarketAuthenticationService
 
     $this->storeValidToken($tokenData, 'authorization_code');
 
-    return $tokenData->access_token;
+    return $tokenData;
   }
 
   public function storeValidToken($tokenData, $grantType)
