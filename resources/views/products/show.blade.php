@@ -9,7 +9,8 @@
   </div>
   <div class="row">
     <div class="col">
-      <a class="btn btn-success btn-lg" href="#">Purchase</a>
+      <a class="btn btn-success btn-lg"
+        href="{{route('products.purchase', ['title' => $product->title, 'id'=>$product->identifier])}}">Purchase</a>
     </div>
   </div>
   <div class="row">
