@@ -32,6 +32,28 @@ class MarketService
     return $this->makeRequest('GET', "products/{$id}");
   }
 
+
+  public function publishProduct($sellerId, $productData)
+  {
+    return $this->makeRequest(
+      'POST',
+      "sellers/{$sellerId}/products",
+      [],
+      $productData,
+      [],
+      $hasFile = true
+    );
+  }
+
+  public function setProductCategory($productId, $categoryId)
+  {
+    return $this->makeRequest(
+      'PUT',
+      "products/{$productId}/categories/{$categoryId}",
+    );
+  }
+
+
   // Obtenemos las categorías
   public function getCategories()
   {

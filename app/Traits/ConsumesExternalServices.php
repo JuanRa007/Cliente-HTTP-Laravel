@@ -11,7 +11,7 @@ trait ConsumesExternalServices
    * Send a request to any service
    * @return string
    */
-  public function makeRequest($method, $requestUrl, $queryParams = [], $formParams = [], $headers = [])
+  public function makeRequest($method, $requestUrl, $queryParams = [], $formParams = [], $headers = [], $hasFile = false)
   {
 
     // Dirección base del API
@@ -26,11 +26,24 @@ trait ConsumesExternalServices
       $this->resolveAuthorization($queryParams, $formParams, $headers);
     }
 
+    // Para poder enviar ficheros.
+    $bodyType = 'form_params';
+
+    if ($hasFile) {
+      $bodyType = 'multipart';
+
+      $multipart = [];
+
+      foreach ($formParams as $name => $contents) {
+        $multipart[] = ['name' => $name, 'contents' => $contents];
+      }
+    }
+
     // Enviamos la petición
     $response = $client->request($method, $requestUrl, [
-      'query'         => $queryParams,
-      'form_params'   => $formParams,
-      'headers'       => $headers
+      'query'     => $queryParams,
+      $bodyType   => $hasFile ? $multipart : $formParams,
+      'headers'   => $headers
     ]);
 
     // Nos llegará una respuesta ya que GuzzleHttp generará una excepción si hay un error y no se

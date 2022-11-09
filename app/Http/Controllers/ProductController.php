@@ -46,6 +46,12 @@ class ProductController extends Controller
      */
     public function showPublishProductForm()
     {
+
+        $categories = $this->marketService->getCategories();
+
+        return view('products.publish')->with([
+            'categories' => $categories
+        ]);
     }
 
     /**
@@ -55,5 +61,27 @@ class ProductController extends Controller
      */
     public function publishProduct(Request $request)
     {
+
+        $rules = [
+            'title'     => 'required',
+            'details'   => 'required',
+            'stock'     => 'required|min:1',
+            'picture'   => 'required|image',
+            'category'  => 'required',
+        ];
+
+        $productData = $this->validate($request, $rules);
+        $productData['picture'] = fopen($request->picture->path(), 'r');
+
+        $productData = $this->marketService->publishProduct($request->user()->service_id, $productData);
+
+        $this->marketService->setProductCategory($productData->identifier, $request->category);
+
+        return redirect()
+            ->route('products.show', [
+                $productData->title,
+                $productData->identifier,
+            ])
+            ->with('success', ['Product created successfully']);
     }
 }
