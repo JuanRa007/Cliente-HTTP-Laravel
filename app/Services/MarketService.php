@@ -53,6 +53,32 @@ class MarketService
     );
   }
 
+  public function updateProduct($sellerId, $productId, $productData)
+  {
+
+    $productData['_method'] = 'PUT';
+
+    return $this->makeRequest(
+      'POST',
+      "sellers/{$sellerId}/products/{$productId}",
+      [],
+      $productData,
+      [],
+      $hasFile = isset($productData['picture'])
+    );
+  }
+
+
+  public function purchaseProduct($productId, $buyerId, $quantity)
+  {
+
+    return $this->makeRequest(
+      'POST',
+      "products/{$productId}/buyers/{$buyerId}/transactions",
+      [],
+      ['quantity' => $quantity]
+    );
+  }
 
   // Obtenemos las categorías
   public function getCategories()
@@ -70,5 +96,17 @@ class MarketService
   public function getUserInformation()
   {
     return $this->makeRequest('GET', "users/me");
+  }
+
+  // Obtenemos la lista de compras de un usuario.
+  public function getPurchases($buyerId)
+  {
+    return $this->makeRequest('GET', "buyers/{$buyerId}/products");
+  }
+
+  // Obtenemos la lista de compras de un usuario.
+  public function getPublications($sellerId)
+  {
+    return $this->makeRequest('GET', "sellers/{$sellerId}/products");
   }
 }
